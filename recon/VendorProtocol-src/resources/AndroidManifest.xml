@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    android:versionCode="90002"
+    android:versionName="9.0.2"
+    package="com.sony.dtv.b2b.vendorprotocol">
+    <uses-sdk
+        android:minSdkVersion="26"
+        android:targetSdkVersion="26"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.DEVICE_POWER"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="com.sony.dtv.webapi.permission.BIND_WEBAPI_CORE_SERVICE"/>
+    <uses-permission android:name="com.sony.dtv.webapi.permission.SESSION_STORAGE.write"/>
+    <uses-permission android:name="com.sony.dtv.permission.READ_MODEL_VARIATION_INFO"/>
+    <uses-permission android:name="com.sony.dtv.permission.MTPF"/>
+    <uses-permission android:name="com.sony.dtv.homenetwork.permission.IPCONTROL_RECEIVE_INTENT"/>
+    <uses-permission android:name="com.sony.dtv.magicpacketnotifyservice.RECEIVE_MAGICPACKET"/>
+    <uses-permission android:name="com.sony.dtv.settingsprovider.permission.READ_SETTINGS"/>
+    <application
+        android:theme="@style/AppTheme"
+        android:label="@string/app_name"
+        android:icon="@drawable/settings_system"
+        android:manageSpaceActivity="com.sony.dtv.b2b.vendorprotocol.ManageActivity"
+        android:persistent="true"
+        android:allowBackup="false">
+        <uses-library android:name="com.mediatek.twoworlds.tv"/>
+        <activity android:name="com.sony.dtv.b2b.vendorprotocol.ManageActivity"/>
+        <receiver
+            android:name="com.sony.dtv.b2b.vendorprotocol.CommonImplicitReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="com.sony.dtv.b2b.vendorprotocol.action.START_SERVICE"/>
+            </intent-filter>
+        </receiver>
+        <service
+            android:name="com.sony.dtv.b2b.vendorprotocol.VendorProtocolService"
+            android:exported="false"/>
+    </application>
+</manifest>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <public type="drawable" name="android_focused" id="0x7f020000" />
+    <public type="drawable" name="android_normal" id="0x7f020001" />
+    <public type="drawable" name="android_pressed" id="0x7f020002" />
+    <public type="drawable" name="icon" id="0x7f020003" />
+    <public type="drawable" name="stateimages" id="0x7f020004" />
+    <public type="drawable" name="translucent_background" id="0x7f020005" />
+    <public type="layout" name="main" id="0x7f030000" />
+    <public type="string" name="app_name" id="0x7f040000" />
+    <public type="string" name="btn01" id="0x7f040001" />
+    <public type="string" name="btn02" id="0x7f040002" />
+    <public type="string" name="btnFinishApp" id="0x7f040003" />
+    <public type="id" name="mylinearlayout" id="0x7f050000" />
+    <public type="id" name="btn01" id="0x7f050001" />
+    <public type="id" name="btn02" id="0x7f050002" />
+    <public type="id" name="btnFinishApp" id="0x7f050003" />
+</resources>

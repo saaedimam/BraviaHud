@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+
+Name: AndroidManifest.xml
+SHA-256-Digest: 8ZOYYxxpXOmuMTl3Me3YLcpI0M4KHY8DpSKmrHbPJvM=
+
+Name: classes.dex
+SHA-256-Digest: kuBz7Rv2F1bHRPKPROz5DYnXiV2oDaIWnc/2OvGUQKs=
+
+Name: res/layout/tvview_layout.xml
+SHA-256-Digest: B6QarXKz7x1vTfXd3CJP6+1DoMfTvBr6P+54uzlwlro=
+
+Name: resources.arsc
+SHA-256-Digest: NRBn3tdt2TabNDKhKalD6QnaEmBhXfSAX25+fK1iwQc=
+

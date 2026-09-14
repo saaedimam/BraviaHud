@@ -1,0 +1,49 @@
+Manifest-Version: 1.0
+Built-By: Generated-by-ADT
+Created-By: Android Gradle 3.0.1
+
+Name: AndroidManifest.xml
+SHA-256-Digest: hmtCY0cC4BSU1jfNqx1XZ0fROY8Fhle4XXqQjNb/VSo=
+
+Name: assets/node/node_modules/ircc-ip/ircc-ip.js
+SHA-256-Digest: heBqxQtxMcpNu2OsktyJu7hFtbttOFKf7ioj37gt34k=
+
+Name: assets/node/node_modules/ircc-ip/package.json
+SHA-256-Digest: ykkPP5E/+uzE5woKw+Ux8ofXR0MS4rc+wJgDWOc0z4g=
+
+Name: assets/node/node_modules/logger/logger.js
+SHA-256-Digest: R4jn/qiYBFFcPjn16GiC6c7gX6FKjXj5ZM1RlCtum3c=
+
+Name: assets/node/node_modules/logger/package.json
+SHA-256-Digest: 6Xo1DAZd8jRlEm+jI0jJw6J+LJ2kA6GmPtzs5bHGWnY=
+
+Name: assets/node/node_modules/webapi/package.json
+SHA-256-Digest: 2naCPoCNUHmnXfUxOSi5sdrTP6+ziXkU48te2FjUHlw=
+
+Name: assets/node/node_modules/webapi/webapi.js
+SHA-256-Digest: lldQugKi7YyW1hWDCXk+SBbuCva9WnTpjiw+kLc8l10=
+
+Name: assets/node/sddp/node_modules/sddp_device.js
+SHA-256-Digest: W6hFbBbQnEVV0QJ+T9pHek0R/HZQqGEFb4msyUVSjqo=
+
+Name: assets/node/sddp/node_modules/sddp_packet.js
+SHA-256-Digest: Lt8c3qyMFxeZi5oEk0m23L866fjPz98BdHslU1oEku8=
+
+Name: assets/node/sddp/sddp.js
+SHA-256-Digest: wttLuhXk7V3ew8NCf3xTpAsGbPhTEx+fVbnImp7x4CE=
+
+Name: assets/node/ssip/node_modules/ssip_protocol.js
+SHA-256-Digest: yt8jyJmmdrOFLsSIjdznzbmmkR9mc/nTWKYSeZ5kpEs=
+
+Name: assets/node/ssip/ssip.js
+SHA-256-Digest: U62A7XaWUCDVvzhfnd+Ydm/wPFPQIw+wv8fjR4dWano=
+
+Name: classes.dex
+SHA-256-Digest: TnP8Nf4u9rIhTY3yiWi9QQU2BzbSKZVYpaciK6+nW1g=
+
+Name: res/drawable/settings_system.png
+SHA-256-Digest: nVMxYRMGepAkdkqw6jP0ABe3nXO6rodyYCsjnm5j/aE=
+
+Name: resources.arsc
+SHA-256-Digest: zJ+pE7Qcmr4AoLPRU4LdtP4lr9sqfVSnoUrX2RGJFT8=
+

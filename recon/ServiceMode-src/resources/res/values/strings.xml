@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ServiceMode</string>
+    <string name="start_service_mode">Starting Service Mode</string>
+    <string name="start_self_diag_mode">Starting Self Diagnostic Mode</string>
+</resources>

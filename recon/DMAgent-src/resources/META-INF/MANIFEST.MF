@@ -1,0 +1,30 @@
+Manifest-Version: 1.0
+Created-By: 1.8.0_45-internal (Oracle Corporation)
+
+Name: AndroidManifest.xml
+SHA1-Digest: yO3hlTFMGzP42HA5Gp6gmPyiqbU=
+
+Name: classes.dex
+SHA1-Digest: qb/Pi+72njFxletU1hRWewjosZY=
+
+Name: res/drawable-hdpi-v4/android_focused.png
+SHA1-Digest: iOeWg04pRO6aAJ/DRxlwCJrpb2c=
+
+Name: res/drawable-hdpi-v4/android_normal.png
+SHA1-Digest: djhRyhfINyqTnE6b8uZG1Qv+OC4=
+
+Name: res/drawable-hdpi-v4/android_pressed.png
+SHA1-Digest: yn8L3AwVvnruZpBex4NypS+o/EQ=
+
+Name: res/drawable-hdpi-v4/icon.png
+SHA1-Digest: xztIIxAd5/rhG9QZR9Id5Lzid+k=
+
+Name: res/drawable-hdpi-v4/stateimages.xml
+SHA1-Digest: g1EmAs2xRb7EOEE8ztZPOFAOdoM=
+
+Name: res/layout/main.xml
+SHA1-Digest: y5DvjbztOY8Yzg4N4AE8inLmz+0=
+
+Name: resources.arsc
+SHA1-Digest: 35fSK0u3pn9PSv47CMgt3bs0+3E=
+

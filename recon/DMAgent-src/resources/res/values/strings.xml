@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">mtkdmapi_agent</string>
+    <string name="btn01">No action</string>
+    <string name="btn02">No action</string>
+    <string name="btnFinishApp">Exit App</string>
+</resources>

@@ -1,0 +1,17 @@
+Signature-Version: 1.0
+Created-By: 1.0 (Android SignApk)
+SHA-256-Digest-Manifest: 8bvRHhXraLQXo++NI/fu4RG962PvlmNT7d4rZujyRQc=
+X-Android-APK-Signed: 2
+
+Name: AndroidManifest.xml
+SHA-256-Digest: 02aazCRx0QguBDQS4nG9gAL0maBCfO4g+mAn3c885Is=
+
+Name: classes.dex
+SHA-256-Digest: Rhd3f/GgP91zeOBZ/uJZMzGk60BhRtZ5P5/Bo7Dgyq0=
+
+Name: res/layout/tvview_layout.xml
+SHA-256-Digest: ++vxtD9mqeWV+B6EXVm8oMTSz7T1bN+72sTImD8nA4k=
+
+Name: resources.arsc
+SHA-256-Digest: bx3cUipqzfYMd30Ok2MVsEXlZhX5WZWVcbDnerPpFi8=
+

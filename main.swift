@@ -617,411 +617,155 @@ struct TouchpadSurfaceView: View {
 // MARK: Main SwiftUI HUD View
 struct RemoteHUDView: View {
     @ObservedObject var service = BraviaService.shared
-    @State private var mode: Int = 1
-    @State private var inputText: String = ""
-    @State private var showPreview: Bool = false
-    @State private var isDropTargeted: Bool = false
-
+    @State private var mode = 1
+    @State private var inputText = ""
+    private let bg = Color(red: 0.082, green: 0.086, blue: 0.102)
+    private let raised = Color(red: 0.118, green: 0.125, blue: 0.145)
+    private let line = Color(red: 0.165, green: 0.176, blue: 0.204)
+    private let ink = Color(red: 0.945, green: 0.949, blue: 0.957)
+    private let ink2 = Color(red: 0.608, green: 0.631, blue: 0.675)
+    private let accent = Color(red: 0.2, green: 0.9, blue: 0.76)
+    private let accentInk = Color(red: 0.03, green: 0.19, blue: 0.16)
+    private let danger = Color(red: 1.0, green: 0.38, blue: 0.35)
     var body: some View {
-        VStack(spacing: 8) {
-            // File Drop Zone (drag-drop any file → /sdcard/mac-Hud/)
-            if isDropTargeted {
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(Color.blue.opacity(0.3))
-                    .overlay(
-                        VStack(spacing: 4) {
-                            Image(systemName: "arrow.down.doc.fill")
-                                .font(.system(size: 18))
-                            Text("Drop → /sdcard/mac-Hud/")
-                                .font(.system(size: 9, weight: .medium))
-                        }
-                        .foregroundColor(.white)
-                    )
-                    .frame(height: 48)
-                    .padding(.horizontal, 4)
-                    .transition(.opacity)
+        VStack(spacing: 0) {
+            header
+            modeSwitcher
+            if mode == 1 { touchpad } else { dpad }
+            navGrid
+            Divider().background(line)
+            videoControls
+            Divider().background(line)
+            clipboardSection
+            Spacer()
+            Button(action: { service.closeAllApps() }) {
+                HStack {
+                    Image(systemName: "power").font(.system(size: 14))
+                    Text("Clean RAM / Force Stop").font(.system(size: 10))
+                }
+                .frame(maxWidth: .infinity)
+                .padding(8)
+                .background(danger.opacity(0.14))
+                .foregroundColor(danger)
+                .cornerRadius(8)
             }
-            // Header
-            HStack {
-                Circle()
-                    .fill(service.isConnected ? Color.green : Color.red)
-                    .frame(width: 8, height: 8)
-                Text("BRAVIA HUD")
-                    .font(.system(size: 12, weight: .bold, design: .rounded))
-                    .foregroundColor(.white)
-                Spacer()
-                Text(service.statusMessage)
-                    .font(.system(size: 9, weight: .medium, design: .monospaced))
-                    .foregroundColor(.gray)
-                    .lineLimit(1)
-                Button(action: { service.sendIRCC("TvPower") }) {
-                    Image(systemName: "power")
-                        .font(.system(size: 12, weight: .bold))
-                        .foregroundColor(.red)
+            .buttonStyle(PlainButtonStyle())
+            .padding(10)
+        }
+        .frame(width: 296, height: 780)
+        .background(bg)
+        .foregroundColor(ink)
+    }
+    private var header: some View {
+        HStack {
+            Circle().fill(service.isConnected ? accent : .red).frame(width: 7, height: 7)
+            Text("Bravia HUD").font(.system(size: 13, weight: .semibold))
+            Spacer()
+            Text("192.168.0.42").font(.system(.caption2, design: .monospaced)).foregroundColor(ink2)
+        }
+        .padding(14)
+    }
+    private var modeSwitcher: some View {
+        HStack(spacing: 6) {
+            modeBtn(label: "Live", icon: "play.tv", tag: 1)
+            modeBtn(label: "Touch", icon: "hand.tap", tag: 2)
+            modeBtn(label: "D-pad", icon: "square.grid.3x3", tag: 3)
+        }
+        .padding(.horizontal, 14)
+        .padding(.bottom, 10)
+    }
+    private func modeBtn(label: String, icon: String, tag: Int) -> some View {
+        Button(action: { mode = tag }) {
+            HStack(spacing: 4) {
+                Image(systemName: icon).font(.system(size: 11))
+                Text(label).font(.system(size: 9))
+            }
+            .frame(maxWidth: .infinity)
+            .padding(7)
+            .background(mode == tag ? accent : raised)
+            .foregroundColor(mode == tag ? accentInk : ink2)
+            .cornerRadius(8)
+        }
+        .buttonStyle(PlainButtonStyle())
+    }
+    private var dpad: some View {
+        ZStack {
+            Button(action: { service.sendIRCC("Up") }) { Image(systemName: "chevron.up").padding(12) }.offset(y: -40)
+            Button(action: { service.sendIRCC("Down") }) { Image(systemName: "chevron.down").padding(12) }.offset(y: 40)
+            Button(action: { service.sendIRCC("Left") }) { Image(systemName: "chevron.left").padding(12) }.offset(x: -40)
+            Button(action: { service.sendIRCC("Right") }) { Image(systemName: "chevron.right").padding(12) }.offset(x: 40)
+            Button(action: { service.sendIRCC("Confirm") }) { Text("OK").font(.caption).bold().padding(14).background(raised).cornerRadius(20) }
+        }
+        .frame(height: 120)
+    }
+    private var touchpad: some View {
+        RoundedRectangle(cornerRadius: 10)
+            .fill(Color.black.opacity(0.3))
+            .frame(height: 100)
+            .overlay(Text("Tap/Swipe here").font(.caption2).foregroundColor(ink2))
+            .padding(.horizontal, 14)
+    }
+    private var navGrid: some View {
+        HStack(spacing: 6) {
+            gridBtn(icon: "arrow.uturn.left", title: "Back", action: { service.sendIRCC("Return") })
+            gridBtn(icon: "house", title: "Home", action: { service.sendIRCC("Home") })
+            gridBtn(icon: "list.bullet", title: "Menu", action: { service.sendIRCC("ActionMenu") })
+            gridBtn(icon: "minus.square", title: "Hide", action: { NSApp.hide(nil) })
+        }
+        .padding(.horizontal, 14)
+        .padding(.bottom, 10)
+    }
+    private var videoControls: some View {
+        VStack(spacing: 6) {
+            HStack(spacing: 6) {
+                gridBtn(icon: "speaker.wave.1", title: "Vol-", action: { service.sendIRCC("VolumeDown") })
+                gridBtn(icon: "speaker.slash", title: "Mute", action: { service.sendIRCC("Mute") })
+                gridBtn(icon: "speaker.wave.3", title: "Vol+", action: { service.sendIRCC("VolumeUp") })
+                gridBtn(icon: "playpause", title: "Play", action: { service.sendIRCC("Play") })
+            }
+            HStack(spacing: 6) {
+                gridBtn(icon: "arrow.up.left.and.arrow.down.right", title: "Full", action: { service.toggleFullScreenVideo() })
+                gridBtn(icon: "aspectratio", title: "Aspect", action: { service.sendIRCC("Wide") })
+                gridBtn(icon: "sun.max", title: "Pic", action: { service.sendIRCC("PictureMode") })
+                gridBtn(icon: "info.circle", title: "Info", action: { service.sendIRCC("Display") })
+            }
+        }
+        .padding(.horizontal, 14)
+    }
+    private var clipboardSection: some View {
+        VStack(spacing: 6) {
+            HStack(spacing: 6) {
+                gridBtn(icon: "doc.on.clipboard", title: "Paste", action: { service.pasteMacClipboard() })
+                gridBtn(icon: "doc.on.doc", title: "Copy", action: { service.copyText() })
+                gridBtn(icon: "checkmark.square", title: "All", action: { service.selectAll() })
+                gridBtn(icon: "scissors", title: "Cut", action: { service.cutText() })
+            }
+            HStack(spacing: 6) {
+                TextField("Type text TV...", text: $inputText)
+                    .textFieldStyle(PlainTextFieldStyle())
+                    .padding(8).background(raised).cornerRadius(8)
+                Button(action: { service.sendText(inputText); inputText = "" }) {
+                    Image(systemName: "arrow.right").padding(8).background(accent).cornerRadius(8)
                 }
                 .buttonStyle(PlainButtonStyle())
             }
-            .padding(.horizontal, 4)
-
-            // Mode Selector
-            Picker("", selection: $mode) {
-                Text("👆 Touchpad").tag(1)
-                Text("🕹️ D-Pad").tag(0)
-            }
-            .pickerStyle(SegmentedPickerStyle())
-
-            if mode == 1 {
-                TouchpadSurfaceView()
-            } else {
-                ZStack {
-                    Circle()
-                        .fill(Color.white.opacity(0.08))
-                        .frame(width: 118, height: 118)
-
-                    Button(action: { service.sendIRCC("Up") }) {
-                        Image(systemName: "chevron.up")
-                            .font(.system(size: 14, weight: .bold))
-                            .foregroundColor(.white)
-                            .frame(width: 38, height: 26)
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    .offset(y: -38)
-
-                    Button(action: { service.sendIRCC("Down") }) {
-                        Image(systemName: "chevron.down")
-                            .font(.system(size: 14, weight: .bold))
-                            .foregroundColor(.white)
-                            .frame(width: 38, height: 26)
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    .offset(y: 38)
-
-                    Button(action: { service.sendIRCC("Left") }) {
-                        Image(systemName: "chevron.left")
-                            .font(.system(size: 14, weight: .bold))
-                            .foregroundColor(.white)
-                            .frame(width: 26, height: 38)
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    .offset(x: -38)
-
-                    Button(action: { service.sendIRCC("Right") }) {
-                        Image(systemName: "chevron.right")
-                            .font(.system(size: 14, weight: .bold))
-                            .foregroundColor(.white)
-                            .frame(width: 26, height: 38)
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    .offset(x: 38)
-
-                    Button(action: { service.sendIRCC("Confirm") }) {
-                        Circle()
-                            .frame(width: 38, height: 38)
-                            .overlay(
-                                Text("OK")
-                                    .font(.system(size: 11, weight: .bold))
-                                    .foregroundColor(.white)
-                            )
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                }
-                .padding(.vertical, 2)
-            }
-
-            // Navigation Row: Back, Home, Menu
-            HStack(spacing: 16) {
-                IconButton(icon: "arrow.uturn.backward", title: "Back") {
-                    service.sendIRCC("Return")
-                }
-IconButton(icon: "arrow.down.right.and.arrow.up.left", title: "Minimise"){
-NSApp.hide(nil)
- }
-
-                IconButton(icon: "house.fill", title: "Home") {
-                    service.sendIRCC("Home")
-                }
-                IconButton(icon: "slider.horizontal.3", title: "Menu") {
-                    service.sendIRCC("ActionMenu")
-                }
-            }
-
-            Divider().background(Color.white.opacity(0.15))
-
-            // Screen Fullscreen Video Controls Section
-            VStack(alignment: .leading, spacing: 4) {
-                HStack {
-                    Text("SCREEN & VIDEO CONTROLS")
-                        .font(.system(size: 8, weight: .bold))
-                        .foregroundColor(.gray)
-                    Spacer()
-                }
-
-                HStack(spacing: 5) {
-                    Button(action: { service.toggleFullScreenVideo() }) {
-                        Label("⛶ Fullscreen", systemImage: "arrow.up.left.and.arrow.down.right")
-                            .font(.system(size: 9, weight: .semibold))
-                    }
-                    .buttonStyle(ModernButtonStyle(tint: .blue))
-
-                    Button(action: { service.sendIRCC("Wide") }) {
-                        Label("Aspect Ratio", systemImage: "aspectratio.fill")
-                            .font(.system(size: 9, weight: .semibold))
-                    }
-                    .buttonStyle(ModernButtonStyle(tint: .purple))
-
-                    Button(action: { service.sendIRCC("PictureMode") }) {
-                        Label("Pic Mode", systemImage: "sun.max.fill")
-                            .font(.system(size: 9, weight: .semibold))
-                    }
-                    .buttonStyle(ModernButtonStyle(tint: .orange))
-                }
-
-                HStack(spacing: 5) {
-                    Button(action: { service.sendIRCC("PicOff") }) {
-                        Label("Screen Off / Audio On", systemImage: "display.trianglebadge.exclamationmark")
-                            .font(.system(size: 9, weight: .semibold))
-                    }
-                    .buttonStyle(ModernButtonStyle(tint: .purple))
-
-                    Button(action: { service.sendIRCC("Display") }) {
-                        Label("Info/Display", systemImage: "info.circle.fill")
-                            .font(.system(size: 9, weight: .semibold))
-                    }
-                    .buttonStyle(ModernButtonStyle(tint: .gray))
-                }
-            }
-
-            Divider().background(Color.white.opacity(0.15))
-
-            // Volume Playback Row
-            HStack(spacing: 6) {
-                Button(action: { service.sendIRCC("VolumeDown") }) {
-                    Label("Vol-", systemImage: "speaker.minus.fill")
-                        .font(.system(size: 9, weight: .medium))
-                }
-                .buttonStyle(ModernButtonStyle())
-
-                Button(action: { service.sendIRCC("Mute") }) {
-                    Label("Mute", systemImage: "speaker.slash.fill")
-                        .font(.system(size: 9, weight: .medium))
-                }
-                .buttonStyle(ModernButtonStyle())
-
-                Button(action: { service.sendIRCC("VolumeUp") }) {
-                    Label("Vol+", systemImage: "speaker.plus.fill")
-                        .font(.system(size: 9, weight: .medium))
-                }
-                .buttonStyle(ModernButtonStyle())
-
-                Button(action: { service.sendIRCC("Play") }) {
-                    Image(systemName: "playpause.fill")
-                        .font(.system(size: 9, weight: .medium))
-                }
-                .buttonStyle(ModernButtonStyle())
-            }
-
-            // Player Controls (media keys)
-            HStack(spacing: 6) {
-                Button(action: { service.sendAdbKey("Prev") }) {
-                    Label("Prev", systemImage: "backward.end.fill")
-                        .font(.system(size: 9, weight: .medium))
-                }
-                .buttonStyle(ModernButtonStyle(tint: .blue))
-
-                Button(action: { service.sendAdbKey("PlayPause") }) {
-                    Label("Play", systemImage: "playpause.fill")
-                        .font(.system(size: 9, weight: .medium))
-                }
-                .buttonStyle(ModernButtonStyle(tint: .green))
-
-                Button(action: { service.sendAdbKey("Next") }) {
-                    Label("Next", systemImage: "forward.end.fill")
-                        .font(.system(size: 9, weight: .medium))
-                }
-                .buttonStyle(ModernButtonStyle(tint: .blue))
-            }
-
-            Divider().background(Color.white.opacity(0.15))
-
-            // Clipboard Selection Tools
-            VStack(alignment: .leading, spacing: 4) {
-                HStack {
-                    Text("CLIPBOARD & TYPING")
-                        .font(.system(size: 8, weight: .bold))
-                        .foregroundColor(.gray)
-                    Spacer()
-                }
-
-                HStack(spacing: 4) {
-                    Button(action: { service.pasteMacClipboard() }) {
-                        Label("Mac Paste", systemImage: "doc.on.clipboard.fill")
-                            .font(.system(size: 9, weight: .semibold))
-                    }
-                    .buttonStyle(ModernButtonStyle(tint: .blue))
-
-                    Button(action: { service.selectAll() }) {
-                        Label("Select All", systemImage: "selection.pin.in.out")
-                            .font(.system(size: 9, weight: .semibold))
-                    }
-                    .buttonStyle(ModernButtonStyle(tint: .purple))
-
-                    Button(action: { service.copyText() }) {
-                        Label("Copy", systemImage: "doc.on.doc.fill")
-                            .font(.system(size: 9, weight: .semibold))
-                    }
-                    .buttonStyle(ModernButtonStyle(tint: .gray))
-
-                    Button(action: { service.pasteText() }) {
-                        Label("Paste", systemImage: "arrow.down.doc.fill")
-                            .font(.system(size: 9, weight: .semibold))
-                    }
-                    .buttonStyle(ModernButtonStyle(tint: .gray))
-                }
-
-                HStack(spacing: 4) {
-                    Button(action: { service.cutText() }) {
-                        Label("Cut", systemImage: "scissors")
-                            .font(.system(size: 9, weight: .semibold))
-                    }
-                    .buttonStyle(ModernButtonStyle(tint: .gray))
-
-                    Button(action: { service.clearField() }) {
-                        Label("Clear Field", systemImage: "delete.left.fill")
-                            .font(.system(size: 9, weight: .semibold))
-                    }
-                    .buttonStyle(ModernButtonStyle(tint: .red))
-                }
-            }
-
-            Divider().background(Color.white.opacity(0.15))
-
-            // Quick App Launchers
+        }
+        .padding(14)
+    }
+    private func gridBtn(icon: String, title: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
             VStack(spacing: 4) {
-                HStack(spacing: 6) {
-                    AppButton(title: "⚡CricPK (Live)", color: .green) {
-                        service.launchApp("com.pro.cricpk", restart: false)
-                    }
-                    AppButton(title: "📺 StreamX", color: .blue) {
-                        service.launchApp("com.devcoder.streamx", restart: false)
-                    }
-                }
-                HStack(spacing: 6) {
-                    AppButton(title: "🔴YouTube (No Ads)", color: .red) {
-                        service.launchApp("org.smarttube.stable", restart: false)
-                    }
-                    AppButton(title: "🎵 Spotify", color: .purple) {
-                        service.launchApp("com.spotify.tv.android", restart: false)
-                    }
-                }
+                Image(systemName: icon).font(.system(size: 12))
+                Text(title).font(.system(size: 8))
             }
-
-            // Text Typing Smart Tools
-            HStack(spacing: 6) {
-                TextField("Type text TV...", text: $inputText, onCommit: {
-                    if !inputText.isEmpty {
-                        service.sendText(inputText)
-                        inputText = ""
-                    }
-                })
-                .textFieldStyle(PlainTextFieldStyle())
-                .padding(5)
-                .background(Color.white.opacity(0.1))
-                .cornerRadius(6)
-                .font(.system(size: 10))
-                .foregroundColor(.white)
-
-                Button(action: {
-                    if !inputText.isEmpty {
-                        service.sendText(inputText)
-                        inputText = ""
-                    }
-                }) {
-                    Image(systemName: "arrow.right.circle.fill")
-                        .font(.system(size: 14))
-                        .foregroundColor(.blue)
-                }
-                .buttonStyle(PlainButtonStyle())
-            }
-
-            HStack(spacing: 6) {
-                Button(action: { service.openRealityCreation() }) {
-                    Label("✨4K Mode", systemImage: "sparkles")
-                        .font(.system(size: 9, weight: .semibold))
-                }
-                .buttonStyle(ModernButtonStyle(tint: .cyan))
-
-                Button(action: { service.closeAllApps() }) {
-                    Label("Clean RAM", systemImage: "bolt.fill")
-                        .font(.system(size: 9, weight: .semibold))
-                }
-                .buttonStyle(ModernButtonStyle(tint: .orange))
-
-Button(action: {
-service.startMacToTV()
-}) {
-Label("Mac → TV", systemImage: "display.2")
-.font(.system(size: 9, weight: .semibold))
-}
-.buttonStyle(ModernButtonStyle(tint: .green))
-Button(action: {
-service.stopMacToTV()
-}) {
-Label("Stop Mac→TV", systemImage: "stop.circle")
-.font(.system(size: 9, weight: .semibold))
-}
-.buttonStyle(ModernButtonStyle(tint: .red))
-Button(action: {
-service.startTVToMac()
-}) {
-Label("TV → Mac", systemImage: "airplayvideo")
-.font(.system(size: 9, weight: .semibold))
-}
-.buttonStyle(ModernButtonStyle(tint: .purple))
-Button(action: {
-service.stopTVToMac()
-}) {
-Label("Stop TV→Mac", systemImage: "stop.circle.fill")
-.font(.system(size: 9, weight: .semibold))
-}
-.buttonStyle(ModernButtonStyle(tint: .red))
-
-                Button(action: {
-                    service.captureScreen()
-                    showPreview.toggle()
-                }) {
-                    Label(service.isCapturing ? "Capturing..." : "Preview", systemImage: "camera.fill")
-                        .font(.system(size: 9, weight: .semibold))
-                }
-                .buttonStyle(ModernButtonStyle(tint: Color(red: 0.1, green: 0.7, blue: 0.9)))
-            }
-
-            if showPreview, let img = service.screenImage {
-                Image(nsImage: img)
-                    .resizable()
-                    .aspectRatio(16/9, contentMode: .fit)
-                    .cornerRadius(6)
-                    .overlay(RoundedRectangle(cornerRadius: 6).stroke(Color.white.opacity(0.2), lineWidth: 1))
-            }
+            .frame(maxWidth: .infinity)
+            .padding(8)
+            .background(raised)
+            .cornerRadius(8)
         }
-        .padding(12)
-        .frame(width: 276)
-        .background(VisualEffectView(material: .hudWindow, blendingMode: .behindWindow))
-        .onDrop(of: [.fileURL], isTargeted: $isDropTargeted) { providers in
-            guard let provider = providers.first else { return false }
-            provider.loadItem(forTypeIdentifier: "public.file-url", options: nil) { item, _ in
-                if let data = item as? Data,
-                   let url = URL(dataRepresentation: data, relativeTo: nil) {
-                    DispatchQueue.main.async {
-                        service.pushFile(url.path)
-                    }
-                }
-            }
-            return true
-        }
+        .buttonStyle(PlainButtonStyle())
     }
 }
-
-// MARK: Components
 struct IconButton: View {
     let icon: String
     let title: String
@@ -1097,7 +841,7 @@ class FloatingPanel: NSPanel {
     init(contentRect: NSRect) {
         super.init(
             contentRect: contentRect,
-            styleMask: [.nonactivatingPanel, .titled, .closable, .fullSizeContentView],
+            styleMask: [.nonactivatingPanel, .titled, .closable, .miniaturizable, .fullSizeContentView],
             backing: .buffered,
             defer: false
         )
@@ -1198,7 +942,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let contentView = RemoteHUDView()
         let hostingView = NSHostingView(rootView: contentView)
 
-        let initialRect = NSRect(x: 100, y: 100, width: 276, height: 690)
+        let initialRect = NSRect(x: 100, y: 100, width: 296, height: 780)
         panel = FloatingPanel(contentRect: initialRect)
         panel.contentView = hostingView
         panel.center()

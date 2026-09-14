@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    android:versionCode="2"
+    android:versionName="8.0.0"
+    package="com.sony.dtv.servicemode"
+    platformBuildVersionCode="26"
+    platformBuildVersionName="8.0.0">
+    <uses-sdk
+        android:minSdkVersion="26"
+        android:targetSdkVersion="26"/>
+    <application
+        android:theme="@android:style/Theme.NoTitleBar"
+        android:label="@string/app_name">
+        <uses-library
+            android:name="com.sony.dtv.tvinput.provider.util"
+            android:required="true"/>
+        <uses-library
+            android:name="com.sony.dtv.arib"
+            android:required="false"/>
+        <activity
+            android:name="com.sony.dtv.servicemode.ServiceModeActivity"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="com.sony.dtv.intent.action.SERVICE_MODE"/>
+                <action android:name="com.sony.dtv.intent.action.SELF_DIAG_MODE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+    </application>
+    <uses-permission android:name="com.sony.dtv.permission.MTPF"/>
+    <uses-permission android:name="com.sony.dtv.permission.DBUS"/>
+    <uses-permission android:name="com.sony.dtv.tvinput.provider.permission.READ_DATA"/>
+    <uses-permission android:name="com.sony.dtv.tvinput.provider.permission.WRITE_DATA"/>
+</manifest>

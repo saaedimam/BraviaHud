@@ -1,0 +1,50 @@
+Signature-Version: 1.0
+Created-By: 1.0 (Android SignApk)
+SHA-256-Digest-Manifest: 7ZkONi7J0c4IUFdfHPKEVR3mIqMWbQ1lu3CC+iZmcb4=
+X-Android-APK-Signed: 2
+
+Name: AndroidManifest.xml
+SHA-256-Digest: 79R/EI2ipS4Rlwz4AoUKItPeVnaJeZMEV0DRWIE9vK8=
+
+Name: assets/node/node_modules/ircc-ip/ircc-ip.js
+SHA-256-Digest: 00ql6QUenTzmS1bkYVeVodeGmDhwNu3cB/yb3e9PXMs=
+
+Name: assets/node/node_modules/ircc-ip/package.json
+SHA-256-Digest: rr3sClBaGqbLBUy3eHfzPRcHfzsuBy9u5wfTv31kp2Q=
+
+Name: assets/node/node_modules/logger/logger.js
+SHA-256-Digest: P9lyIpQZVaWXvzVcCRXeY4LdBPjfULk1W29G8jYSgvE=
+
+Name: assets/node/node_modules/logger/package.json
+SHA-256-Digest: x2oIBuWzUEaqtKFrj6cMbxtf5KcgoHqa1Hy7gr1xQ6M=
+
+Name: assets/node/node_modules/webapi/package.json
+SHA-256-Digest: w49qZYC1Kf30ltGVzEOgR5gI8F5wo585PKJ30Yz+NWc=
+
+Name: assets/node/node_modules/webapi/webapi.js
+SHA-256-Digest: J9wcVVDHsMGfxBs0HpvEkYZZ4Z6X1/GE0GwcM7DAbxw=
+
+Name: assets/node/sddp/node_modules/sddp_device.js
+SHA-256-Digest: daBjhFOwSqYVgfjHBeWfZXo6YlgEeZaM2gpcq5AtsZQ=
+
+Name: assets/node/sddp/node_modules/sddp_packet.js
+SHA-256-Digest: uliwzcTjL0NJ4nq5lyghFG6D8aFUlwZ9MOXoD+/Yaxw=
+
+Name: assets/node/sddp/sddp.js
+SHA-256-Digest: qJ8+5xTwA4B0V9DXDNt9oevrorVb1VIqp6qCyO/E0Do=
+
+Name: assets/node/ssip/node_modules/ssip_protocol.js
+SHA-256-Digest: Fa+RrsuBW/Iq9F2L7EsO1C3ENbuSPhJwj8A+l++uw5Q=
+
+Name: assets/node/ssip/ssip.js
+SHA-256-Digest: uiBe+RTB4YdLdLxA0fuYz/s9JHuIpNxP3Wjj+0vbLQQ=
+
+Name: classes.dex
+SHA-256-Digest: 53eDMSohGygjV+4TzPVQvxBUE/B/rLYF4GHQT8B/zmk=
+
+Name: res/drawable/settings_system.png
+SHA-256-Digest: bWmGNFUMq7pWkMuiHsU4nx7GaZ7aILlp5lAHSlyOOIs=
+
+Name: resources.arsc
+SHA-256-Digest: YY5zQTXs/N+v3IUKlpNQwytW4T4/ett48nqAM+/IFWc=
+
