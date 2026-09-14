@@ -1,0 +1,19 @@
+# Build artifacts
+build/
+*.o
+*.swiftmodule
+DerivedData/
+
+# macOS
+.DS_Store
+
+# Xcode
+xcuserdata/
+*.xcuserstate
+
+# Python
+__pycache__/
+*.pyc
+
+# Local secrets / token cache
+*.token

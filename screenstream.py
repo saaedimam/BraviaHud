@@ -4,6 +4,8 @@ import subprocess, threading, time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 HOST, PORT = '0.0.0.0', 8095
+TOKEN = 'bhud-' + open('/dev/urandom','rb').read(6).hex()
+print('Token:', TOKEN, flush=True)
 FF = [
     'ffmpeg', '-f', 'avfoundation', '-capture_cursor', '1',
     '-i', 'Capture screen 0',
@@ -35,7 +37,11 @@ threading.Thread(target=broadcaster, daemon=True).start()
 
 class H(BaseHTTPRequestHandler):
     def do_GET(self):
-        if self.path == '/' or self.path == '/index.html':
+        if not any(q == 'token=%s' % TOKEN for q in self.path.split('?')[1:].split('&') if q):
+            self.send_response(401)
+            self.end_headers()
+            return
+        if self.path.split('?')[0] == '/' or self.path.split('?')[0] == '/index.html':
             html = b'''<!DOCTYPE html><html><head><meta charset="utf-8"><title>Mac Screen</title></head>
 <body style="margin:0;background:#000">
 <video autoplay muted controls playsinline style="width:100vw;height:100vh;object-fit:contain" src="/live"></video>
@@ -46,7 +52,7 @@ class H(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(html)
             return
-        if self.path == '/live':
+        if self.path.split('?')[0] == '/live':
             self.send_response(200)
             self.send_header('Content-Type', 'video/mp2t')
             self.send_header('Cache-Control', 'no-cache')

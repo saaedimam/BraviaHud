@@ -7,7 +7,18 @@ class AdbSession {
     private var process: Process?
     private var stdinPipe: Pipe?
     private let queue = DispatchQueue(label: "adb.session.queue", qos: .userInteractive)
-    var adbPath: String = "/Users/ioriimasu/Library/Android/sdk/platform-tools/adb"
+    static func resolveADB() -> String {
+        let candidates = [
+            "/opt/homebrew/bin/adb",
+            "/usr/local/bin/adb",
+            "/usr/bin/adb",
+            "/Users/\(NSUserName())/Library/Android/sdk/platform-tools/adb"
+        ]
+        for c in candidates where FileManager.default.isExecutableFile(atPath: c) { return c }
+        // last resort: rely on PATH
+        return "adb"
+    }
+    var adbPath: String = AdbSession.resolveADB()
     var tvIP: String = "192.168.0.100"
 
     init() {
@@ -97,10 +108,17 @@ class AdbSession {
 }
 
 class BraviaService: ObservableObject {
-    @Published var tvIP: String = "192.168.0.100"
-    @Published var psk: String = "3404"
+    @Published var tvIP: String = "192.168.0.100" { didSet { saveSettings() } }
+    @Published var psk: String = "3404" { didSet { saveSettings() } }
     @Published var isConnected: Bool = true
     @Published var statusMessage: String = "Ready"
+    
+    // Persist settings
+    private let defaults = UserDefaults.standard
+    func saveSettings() {
+        defaults.set(tvIP, forKey: "tvIP")
+        defaults.set(psk, forKey: "psk")
+    }
     @Published var screenImage: NSImage? = nil
     @Published var isCapturing: Bool = false
     @Published var gestureFeedback: String = "Swipe, Tap or Type"
@@ -182,7 +200,28 @@ class BraviaService: ObservableObject {
             statusMessage = "Fullscreen Toggled"
         }
 
-        // MARK: - Mirroring (Mac → TV via ffmpeg HLS + VLC; TV → Mac via scrcpy)
+        
+    private func resolveBinary(_ names: [String]) -> String? {
+        for name in names {
+            let c = "/opt/homebrew/bin/\(name)"
+            if FileManager.default.isExecutableFile(atPath: c) { return c }
+            let c2 = "/usr/local/bin/\(name)"
+            if FileManager.default.isExecutableFile(atPath: c2) { return c2 }
+        }
+        let which = Process()
+        which.executableURL = URL(fileURLWithPath: "/usr/bin/which")
+        which.arguments = ["-a"] + names
+        let pipe = Pipe()
+        which.standardOutput = pipe
+        try? which.run()
+        let data = pipe.fileHandleForReading.readDataToEndOfFile()
+        if let line = String(data: data, encoding: .utf8)?.split(separator: "\n").first {
+            return String(line)
+        }
+        return nil
+    }
+
+    // MARK: - Mirroring (Mac → TV via ffmpeg HLS + VLC; TV → Mac via scrcpy)
         private var macToTVProcess: Process?
         private var httpServerProcess: Process?
         private var scrcpyProcess: Process?
@@ -194,8 +233,11 @@ class BraviaService: ObservableObject {
             try? FileManager.default.createDirectory(atPath: hlsDir, withIntermediateDirectories: true)
 
             // ffmpeg: capture screen -> HLS segments (libx264, 24fps, 2s)
+            guard let ffmpeg = resolveBinary(["ffmpeg"]) else {
+                statusMessage = "ffmpeg not found — run: brew install ffmpeg"; return
+            }
             let ff = Process()
-            ff.executableURL = URL(fileURLWithPath: "/opt/homebrew/bin/ffmpeg")
+            ff.executableURL = URL(fileURLWithPath: ffmpeg)
             ff.arguments = ["-y", "-f", "avfoundation", "-capture_cursor", "1",
                             "-i", "Capture screen 0",
                             "-vf", "scale=1280:-2,fps=24",
@@ -236,13 +278,15 @@ class BraviaService: ObservableObject {
 
         func startTVToMac() {
             stopTVToMac()
+            guard let scrcpy = resolveBinary(["scrcpy"]) else {
+                statusMessage = "scrcpy not found — run: brew install scrcpy"; return
+            }
             let sc = Process()
-            sc.executableURL = URL(fileURLWithPath: "/opt/homebrew/bin/scrcpy")
+            sc.executableURL = URL(fileURLWithPath: scrcpy)
             sc.arguments = ["--serial", "\(tvIP):5555", "--stay-awake", "--no-audio", "--max-size=1280", "--video-bit-rate=4M"]
             sc.standardOutput = Pipe()
         var env = ProcessInfo.processInfo.environment
-        env["ADB"] = "/Users/ioriimasu/Library/Android/sdk/platform-tools/adb"
-        env["PATH"] = "/Users/ioriimasu/Library/Android/sdk/platform-tools:/opt/homebrew/bin:/usr/bin:/bin:" + (env["PATH"] ?? "")
+        env["PATH"] = "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:" + (env["PATH"] ?? "")
         sc.environment = env
 
             sc.standardError = Pipe()
