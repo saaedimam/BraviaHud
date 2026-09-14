@@ -37,7 +37,9 @@ threading.Thread(target=broadcaster, daemon=True).start()
 
 class H(BaseHTTPRequestHandler):
     def do_GET(self):
-        if not any(q == 'token=%s' % TOKEN for q in self.path.split('?')[1:].split('&') if q):
+        qs = self.path.split('?', 1)
+        query = qs[1] if len(qs) > 1 else ''
+        if not any(q == 'token=%s' % TOKEN for q in query.split('&') if q):
             self.send_response(401)
             self.end_headers()
             return
